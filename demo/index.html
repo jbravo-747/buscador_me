@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Demo del buscador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&family=DM+Serif+Display&display=swap">
+<link rel="stylesheet" href="me-buscador.css?v=71949ced">
+<style>
+	:root { --primary-color: #f05025; --primary-font: 'DM Sans', sans-serif; --dark-blue-color: #101725; }
+	* { box-sizing: border-box; }
+	body { margin: 0; font-family: var(--primary-font); color: #111827; background: #fff; }
+	.demo-aviso { padding: 8px 16px; background: #101725; color: rgba(255, 255, 255, 0.86); font-size: 13px; text-align: center; }
+	.demo-aviso strong { color: #fff; }
+	.demo-intro { max-width: 760px; margin: 0 auto; padding: 56px 24px 32px; text-align: center; }
+	.demo-intro h1 { margin: 0 0 12px; font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(30px, 5vw, 46px); font-weight: 400; line-height: 1.1; }
+	.demo-intro p { margin: 0; font-size: 17px; line-height: 1.5; color: #667085; }
+	.demo-wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px 96px; }
+	.demo-pie { padding: 24px; border-top: 1px solid #e5e7eb; font-size: 13px; color: #667085; text-align: center; }
+	.meb { --meb-sticky-top: 12px; }
+	@media (max-width: 743px) {
+		.demo-intro { padding: 36px 16px 24px; }
+		.demo-wrap { padding: 0 16px 64px; }
+	}
+</style>
+</head>
+<body>
+<div class="demo-aviso"><strong>Demostración.</strong> Funciona con una muestra de 122 contenidos; en el sitio usará el catálogo completo.</div>
+<header class="demo-intro">
+	<h1>Encuentra investigaciones, prensa y multimedia</h1>
+	<p>Busca por palabra clave, acota por fecha y elige uno o varios temas.</p>
+</header>
+<main class="demo-wrap">
+	<div class="meb" data-meb data-ajax="1" data-compacto="1">
+		<form class="meb-form" role="search" method="get" action="./">
+
+			<div class="meb-tabs">
+									<label class="meb-tab">
+						<input type="radio" name="meb_tipo" value="todo"  checked="checked">
+						<span><svg class="meb-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>Todo</span>
+					</label>
+									<label class="meb-tab">
+						<input type="radio" name="meb_tipo" value="publicaciones" >
+						<span><svg class="meb-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>Nuestras investigaciones</span>
+					</label>
+									<label class="meb-tab">
+						<input type="radio" name="meb_tipo" value="prensa" >
+						<span><svg class="meb-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 9h3v8a2 2 0 0 1-2 2M8 9h5M8 13h5"/></svg>Prensa</span>
+					</label>
+									<label class="meb-tab">
+						<input type="radio" name="meb_tipo" value="multimedia" >
+						<span><svg class="meb-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg>Multimedia</span>
+					</label>
+									<label class="meb-tab">
+						<input type="radio" name="meb_tipo" value="eventos" >
+						<span><svg class="meb-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Eventos</span>
+					</label>
+							</div>
+
+			<div class="meb-barwrap">
+				<div class="meb-bar">
+					<div class="meb-seg meb-seg--q" data-seg="q">
+						<label class="meb-label" for="meb-1-q">Buscar</label>
+						<input class="meb-input" id="meb-1-q" type="text" name="meb_q" value="" placeholder="Publicaciones, temas, expertos" autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="meb-1-sug">
+						<button type="button" class="meb-clear" aria-label="Limpiar búsqueda" hidden><svg class="meb-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+					</div>
+					<span class="meb-div" aria-hidden="true"></span>
+					<button type="button" class="meb-seg" data-seg="fecha" aria-expanded="false">
+						<span class="meb-label">Fecha</span>
+						<span class="meb-value" data-valor="fecha"></span>
+					</button>
+					<span class="meb-div" aria-hidden="true"></span>
+					<button type="button" class="meb-seg meb-seg--ultimo" data-seg="tema" aria-expanded="false">
+						<span class="meb-label">Tema</span>
+						<span class="meb-value" data-valor="tema"></span>
+					</button>
+					<button type="submit" class="meb-submit" aria-label="Buscar">
+						<svg class="meb-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>						<span class="meb-submit-text">Buscar</span>
+					</button>
+				</div>
+
+				<div class="meb-panel meb-panel--q" data-panel="q" hidden>
+					<p class="meb-panel-title" data-sug-titulo></p>
+					<ul class="meb-sug" id="meb-1-sug" role="listbox"></ul>
+				</div>
+
+				<div class="meb-panel meb-panel--fecha" data-panel="fecha" hidden>
+					<div class="meb-switch" role="tablist">
+						<button type="button" class="is-on" data-modo="calendario">Calendario</button>
+						<button type="button" data-modo="periodo">Periodo</button>
+					</div>
+					<div class="meb-cal" data-vista="calendario"></div>
+					<div class="meb-periodos" data-vista="periodo" hidden>
+						<button type="button" class="meb-pill" data-periodo="mes:1">Último mes</button>
+						<button type="button" class="meb-pill" data-periodo="mes:3">Últimos 3 meses</button>
+						<button type="button" class="meb-pill" data-periodo="mes:6">Últimos 6 meses</button>
+						<button type="button" class="meb-pill" data-periodo="anio:actual">Este año</button>
+													<button type="button" class="meb-pill" data-periodo="anio:2025">2025</button>
+													<button type="button" class="meb-pill" data-periodo="anio:2024">2024</button>
+													<button type="button" class="meb-pill" data-periodo="anio:2023">2023</button>
+													<button type="button" class="meb-pill" data-periodo="anio:2022">2022</button>
+													<button type="button" class="meb-pill" data-periodo="anio:2021">2021</button>
+													<button type="button" class="meb-pill" data-periodo="anio:2020">2020</button>
+											</div>
+					<div class="meb-panel-foot">
+						<button type="button" class="meb-link" data-accion="limpiar-fecha">Borrar fechas</button>
+					</div>
+				</div>
+
+				<div class="meb-panel meb-panel--tema" data-panel="tema" hidden>
+											<p class="meb-panel-title">Ejes temáticos</p>
+						<div class="meb-rows">
+															<label class="meb-row">
+									<span class="meb-row-text">
+										<span class="meb-row-title">Economía del siglo XXI</span>
+										<span class="meb-row-sub">54 contenidos</span>
+									</span>
+									<input type="checkbox" name="meb_eje[]" value="economia-publica-del-siglo-xxi" data-nombre="Economía del siglo XXI" >
+									<span class="meb-check" aria-hidden="true"></span>
+								</label>
+															<label class="meb-row">
+									<span class="meb-row-text">
+										<span class="meb-row-title">Estado democrático de derecho</span>
+										<span class="meb-row-sub">30 contenidos</span>
+									</span>
+									<input type="checkbox" name="meb_eje[]" value="estado-democrativo-de-derecho" data-nombre="Estado democrático de derecho" >
+									<span class="meb-check" aria-hidden="true"></span>
+								</label>
+															<label class="meb-row">
+									<span class="meb-row-text">
+										<span class="meb-row-title">Ciudadanía e innovación digital</span>
+										<span class="meb-row-sub">20 contenidos</span>
+									</span>
+									<input type="checkbox" name="meb_eje[]" value="ciudadania-e-innovacion-digital" data-nombre="Ciudadanía e innovación digital" >
+									<span class="meb-check" aria-hidden="true"></span>
+								</label>
+															<label class="meb-row">
+									<span class="meb-row-text">
+										<span class="meb-row-title">Educación y salud para la igualdad</span>
+										<span class="meb-row-sub">15 contenidos</span>
+									</span>
+									<input type="checkbox" name="meb_eje[]" value="educacion-y-salud-para-la-igualdad" data-nombre="Educación y salud para la igualdad" >
+									<span class="meb-check" aria-hidden="true"></span>
+								</label>
+													</div>
+										<p class="meb-panel-title">Temas de investigación</p>
+					<div class="meb-chips" data-grupo="tema">
+						<label class="meb-chip"><input type="checkbox" name="meb_tema[]" value="economia"><span>Economía</span></label><label class="meb-chip"><input type="checkbox" name="meb_tema[]" value="ciudadania-digital"><span>Ciudadanía digital</span></label><label class="meb-chip"><input type="checkbox" name="meb_tema[]" value="finanzas-publicas"><span>Finanzas públicas</span></label><label class="meb-chip"><input type="checkbox" name="meb_tema[]" value="derecho"><span>Derecho</span></label><label class="meb-chip"><input type="checkbox" name="meb_tema[]" value="seguridad"><span>Seguridad</span></label><label class="meb-chip"><input type="checkbox" name="meb_tema[]" value="educacion"><span>Educación</span></label><label class="meb-chip"><input type="checkbox" name="meb_tema[]" value="justicia"><span>Justicia</span></label><label class="meb-chip"><input type="checkbox" name="meb_tema[]" value="politica"><span>Política</span></label><label class="meb-chip"><input type="checkbox" name="meb_tema[]" value="salud"><span>Salud</span></label><label class="meb-chip"><input type="checkbox" name="meb_tema[]" value="democracia"><span>Democracia</span></label><label class="meb-chip"><input type="checkbox" name="meb_tema[]" value="anticorrupcion"><span>Anticorrupción</span></label><label class="meb-chip"><input type="checkbox" name="meb_tema[]" value="energia"><span>Energía</span></label>					</div>
+				</div>
+			</div>
+
+			<input type="hidden" name="meb_desde" value="">
+			<input type="hidden" name="meb_hasta" value="">
+
+			<div class="meb-modal" data-modal hidden>
+				<div class="meb-modal-box" role="dialog" aria-modal="true" aria-labelledby="meb-1-filtros">
+					<div class="meb-modal-head">
+						<h2 id="meb-1-filtros">Filtros</h2>
+						<button type="button" class="meb-modal-close" data-accion="cerrar-modal" aria-label="Cerrar"><svg class="meb-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+					</div>
+					<div class="meb-modal-body">
+													<h3>Tipo de publicación</h3>
+							<div class="meb-chips"><label class="meb-chip"><input type="checkbox" name="meb_formato[]" value="newsletters"><span>Newsletters</span></label><label class="meb-chip"><input type="checkbox" name="meb_formato[]" value="articulo"><span>Artículos</span></label><label class="meb-chip"><input type="checkbox" name="meb_formato[]" value="investigacion"><span>Investigaciones</span></label><label class="meb-chip"><input type="checkbox" name="meb_formato[]" value="comunicado-de-prensa"><span>Comunicado de prensa</span></label></div>
+																			<h3>Programa</h3>
+							<div class="meb-chips"><label class="meb-chip"><input type="checkbox" name="meb_programa[]" value="finanzas-publicas"><span>Finanzas públicas</span></label><label class="meb-chip"><input type="checkbox" name="meb_programa[]" value="ciudadania"><span>Ciudadanía</span></label><label class="meb-chip"><input type="checkbox" name="meb_programa[]" value="justicia"><span>Justicia</span></label><label class="meb-chip"><input type="checkbox" name="meb_programa[]" value="educacion"><span>Educación</span></label><label class="meb-chip"><input type="checkbox" name="meb_programa[]" value="regulacion-y-competencia-economica"><span>Regulación y competencia económica</span></label><label class="meb-chip"><input type="checkbox" name="meb_programa[]" value="seguridad"><span>Seguridad</span></label></div>
+												<h3>Ordenar por</h3>
+						<div class="meb-switch meb-switch--radio">
+															<label><input type="radio" name="meb_orden" value=""  checked="checked"><span>Recomendado</span></label>
+															<label><input type="radio" name="meb_orden" value="reciente" ><span>Más recientes</span></label>
+															<label><input type="radio" name="meb_orden" value="antiguo" ><span>Más antiguos</span></label>
+													</div>
+					</div>
+					<div class="meb-modal-foot">
+						<button type="button" class="meb-link" data-accion="quitar-filtros">Quitar filtros</button>
+						<button type="submit" class="meb-btn-dark" data-mostrar>Mostrar resultados</button>
+					</div>
+				</div>
+			</div>
+		</form>
+
+								<div class="meb-results" aria-live="polite">
+				<div class="meb-results-head">
+					<h2 class="meb-count" data-count>122 resultados</h2>
+					<button type="button" class="meb-filtros-btn" data-accion="abrir-modal">
+						<svg class="meb-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>						Filtros						<span class="meb-filtros-n" data-filtros-n hidden></span>
+					</button>
+				</div>
+				<div class="meb-grid" data-grid>	<a class="meb-card" href="https://mexicoevalua-dev.virk.io/eventos/auditoria-participativa-a-donde-va-nuestro-dinero/">
+		<span class="meb-card-img">
+							<img src="https://mexicoevalua-dev.virk.io/wp-content/uploads/2026/11/Banner_Auditoria-aprtiipativa-768x403.png" alt="" loading="lazy" decoding="async">
+										<span class="meb-badge">Evento</span>
+					</span>
+		<span class="meb-card-title">Auditoría participativa: ¿a dónde va nuestro dinero?</span>
+		<span class="meb-card-meta">16 de noviembre de 2026</span>
+			</a>
+		<a class="meb-card" href="https://mexicoevalua-dev.virk.io/eventos/el-presupuesto-publico-ante-las-necesidades-2027/">
+		<span class="meb-card-img">
+							<img src="https://mexicoevalua-dev.virk.io/wp-content/uploads/2026/11/Banner-paquete-economico-2-768x403.png" alt="" loading="lazy" decoding="async">
+										<span class="meb-badge">Evento</span>
+					</span>
+		<span class="meb-card-title">El presupuesto público ante las necesidades 2027</span>
+		<span class="meb-card-meta">13 de noviembre de 2026</span>
+			</a>
+		<a class="meb-card" href="https://mexicoevalua-dev.virk.io/multimedia/cobertura-y-abandono-escolar-en-mexico/">
+		<span class="meb-card-img">
+							<img src="https://mexicoevalua-dev.virk.io/wp-content/uploads/2026/11/Captura-de-pantalla-2026-11-12-a-las-16.19.15-768x431.png" alt="" loading="lazy" decoding="async">
+										<span class="meb-badge">Multimedia</span>
+					</span>
+		<span class="meb-card-title">Cobertura y abandono escolar en México</span>
+		<span class="meb-card-meta">12 de noviembre de 2026 · Educación</span>
+			</a>
+		<a class="meb-card" href="https://mexicoevalua-dev.virk.io/multimedia/no-podemos-tapar-el-sol-con-un-dedo/">
+		<span class="meb-card-img">
+							<img src="https://mexicoevalua-dev.virk.io/wp-content/uploads/2026/11/Captura-de-pantalla-2026-11-12-a-las-16.01.35-768x463.png" alt="" loading="lazy" decoding="async">
+										<span class="meb-badge">Multimedia</span>
+					</span>
+		<span class="meb-card-title">No podemos tapar el sol con un dedo</span>
+		<span class="meb-card-meta">12 de noviembre de 2026 · Justicia</span>
+			</a>
+		<a class="meb-card" href="https://mexicoevalua-dev.virk.io/multimedia/lo-que-fue-el-inai/">
+		<span class="meb-card-img">
+							<img src="https://mexicoevalua-dev.virk.io/wp-content/uploads/2026/11/Captura-de-pantalla-2026-11-12-a-las-15.53.11-768x429.png" alt="" loading="lazy" decoding="async">
+										<span class="meb-badge">Multimedia</span>
+					</span>
+		<span class="meb-card-title">Lo que fue el INAI</span>
+		<span class="meb-card-meta">12 de noviembre de 2026 · Democracia</span>
+			</a>
+		<a class="meb-card" href="https://mexicoevalua-dev.virk.io/multimedia/por-que-nuestra-infraestructura-hospitalaria-es-tan-debil/">
+		<span class="meb-card-img">
+							<img src="https://mexicoevalua-dev.virk.io/wp-content/uploads/2026/11/Captura-de-pantalla-2026-11-09-a-las-13.23.44-768x430.png" alt="" loading="lazy" decoding="async">
+										<span class="meb-badge">Multimedia</span>
+					</span>
+		<span class="meb-card-title">¿Por qué nuestra infraestructura hospitalaria es tan débil?</span>
+		<span class="meb-card-meta">9 de noviembre de 2026 · Salud</span>
+			</a>
+		<a class="meb-card" href="https://mexicoevalua-dev.virk.io/multimedia/los-desafios-de-los-hospitales-de-la-secretaria-de-salud/">
+		<span class="meb-card-img">
+							<img src="https://mexicoevalua-dev.virk.io/wp-content/uploads/2026/11/Captura-de-pantalla-2026-11-09-a-las-12.35.25-768x430.png" alt="" loading="lazy" decoding="async">
+										<span class="meb-badge">Multimedia</span>
+					</span>
+		<span class="meb-card-title">Los desafíos de los hospitales de la Secretaría de Salud</span>
+		<span class="meb-card-meta">9 de noviembre de 2026 · Salud</span>
+			</a>
+		<a class="meb-card" href="https://mexicoevalua-dev.virk.io/multimedia/gasto-para-pemex-en-el-pef-2026/">
+		<span class="meb-card-img">
+							<img src="https://mexicoevalua-dev.virk.io/wp-content/uploads/2026/11/Captura-de-pantalla-2026-11-09-a-las-12.17.31-768x433.png" alt="" loading="lazy" decoding="async">
+										<span class="meb-badge">Multimedia</span>
+					</span>
+		<span class="meb-card-title">Gasto para Pemex en el PEF 2026</span>
+		<span class="meb-card-meta">9 de noviembre de 2026 · Finanzas públicas</span>
+			</a>
+		<a class="meb-card" href="https://mexicoevalua-dev.virk.io/multimedia/los-10-proyectos-mas-afectados-por-subejercicios-en-salud/">
+		<span class="meb-card-img">
+							<img src="https://mexicoevalua-dev.virk.io/wp-content/uploads/2026/11/Captura-de-pantalla-2026-11-09-a-las-12.13.02-768x432.png" alt="" loading="lazy" decoding="async">
+										<span class="meb-badge">Multimedia</span>
+					</span>
+		<span class="meb-card-title">Los 10 proyectos más afectados por subejercicios en salud</span>
+		<span class="meb-card-meta">9 de noviembre de 2026 · Salud</span>
+			</a>
+		<a class="meb-card" href="https://mexicoevalua-dev.virk.io/multimedia/que-tan-endeudado-esta-mexico/">
+		<span class="meb-card-img">
+							<img src="https://mexicoevalua-dev.virk.io/wp-content/uploads/2026/11/Captura-de-pantalla-2026-11-09-a-las-12.03.11-768x430.png" alt="" loading="lazy" decoding="async">
+										<span class="meb-badge">Multimedia</span>
+					</span>
+		<span class="meb-card-title">¿Qué tan endeudado está México?</span>
+		<span class="meb-card-meta">9 de noviembre de 2026 · Finanzas públicas</span>
+			</a>
+		<a class="meb-card" href="https://mexicoevalua-dev.virk.io/multimedia/la-independencia-judicial-el-activo-estrategico-de-mexico/">
+		<span class="meb-card-img">
+							<img src="https://mexicoevalua-dev.virk.io/wp-content/uploads/2026/11/Captura-de-pantalla-2026-11-09-a-las-11.53.44-768x429.png" alt="" loading="lazy" decoding="async">
+										<span class="meb-badge">Multimedia</span>
+					</span>
+		<span class="meb-card-title">La independencia judicial: El activo estratégico de México</span>
+		<span class="meb-card-meta">9 de noviembre de 2026 · Justicia</span>
+			</a>
+		<a class="meb-card" href="https://mexicoevalua-dev.virk.io/multimedia/radiografia-de-nuestro-sistema-de-salud-ii/">
+		<span class="meb-card-img">
+							<img src="https://mexicoevalua-dev.virk.io/wp-content/uploads/2026/11/Captura-de-pantalla-2026-11-09-a-las-11.18.03-768x430.png" alt="" loading="lazy" decoding="async">
+										<span class="meb-badge">Multimedia</span>
+					</span>
+		<span class="meb-card-title">Radiografía de nuestro sistema de salud II</span>
+		<span class="meb-card-meta">9 de noviembre de 2026 · Salud</span>
+			</a>
+	</div>
+				<div class="meb-more-wrap">
+					<a class="meb-more" data-more href="./" >Mostrar más</a>
+				</div>
+			</div>
+		
+		<button type="button" class="meb-compact" data-compact hidden>
+			<span data-compact-q></span>
+			<span class="meb-div" aria-hidden="true"></span>
+			<span data-compact-fecha></span>
+			<span class="meb-div" aria-hidden="true"></span>
+			<span data-compact-tema></span>
+			<span class="meb-compact-ico"><svg class="meb-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></span>
+		</button>
+	</div>
+	
+</main>
+<footer class="demo-pie">Prototipo del buscador. Las tarjetas enlazan al sitio de pruebas.</footer>
+<script>window.MEB = {"rest":"api/me-buscador/v1/","lang":"","meses":["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"],"mesesCortos":["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"],"dias":["D","L","M","M","J","V","S"],"i18n":{"cualquierFecha":"Cualquier fecha","cualquierTema":"Cualquier tema","cualquierCosa":"Buscar contenido","temas":"%d temas","desde":"Desde %s","mostrar":"Mostrar %s","sinSugerencias":"Sin sugerencias. Presiona Enter para buscar «%s».","error":"No se pudo completar la búsqueda. Intenta de nuevo.","mesAnterior":"Mes anterior","mesSiguiente":"Mes siguiente"}};</script>
+<script src="demo-api.js?v=71949ced"></script>
+<script src="me-buscador.js?v=71949ced"></script>
+<script>document.addEventListener("DOMContentLoaded", function () { window.demoListo && window.demoListo(); });</script>
+</body>
+</html>

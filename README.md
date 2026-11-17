@@ -44,6 +44,16 @@ php -S 127.0.0.1:9400 dev/harness/index.php
 
 Abre `http://127.0.0.1:9400`. Con `?h_esc=flujo` ejecuta una prueba del flujo completo; otros escenarios están en `dev/harness/escenarios.js`.
 
+## Demo estática
+
+La carpeta `demo/` es una versión sin WordPress para enseñar el buscador: el marcado se genera una vez y las búsquedas corren en el navegador sobre `demo/datos.json`. Se regenera con:
+
+```
+php dev/build-demo.php
+```
+
+`vercel.json` publica esa carpeta tal cual, sin paso de compilación. `demo/demo-api.js` replica la lógica de búsqueda del plugin; si cambia una, hay que cambiar la otra.
+
 ## Estado
 
 Versión 0.1.0. Probado en el banco de pruebas; falta validarlo dentro de un WordPress real y con WPML.
