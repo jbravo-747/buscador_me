@@ -1,0 +1,8 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "landingPage": "/",
+  "steps": [
+    { "step": "setSiteLanguage", "language": "es_MX" },
+    { "step": "activatePlugin", "pluginPath": "me-buscador/me-buscador.php" }
+  ]
+}
