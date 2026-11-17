@@ -2,7 +2,7 @@
 /**
  * Plugin Name: ME Buscador
  * Description: Buscador segmentado (palabra clave, fecha y tema) con autocompletado, filtros y resultados en vivo. Shortcode: [me_buscador].
- * Version: 0.1.0
+ * Version: 0.2.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Text Domain: me-buscador
@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MEB_VERSION', '0.1.0' );
+define( 'MEB_VERSION', '0.2.0' );
 
 /* -------------------------------------------------------------------------
  * Configuración
@@ -453,6 +453,8 @@ function meb_enqueue() {
 				'mostrar'        => __( 'Mostrar %s', 'me-buscador' ),
 				'sinSugerencias' => __( 'Sin sugerencias. Presiona Enter para buscar «%s».', 'me-buscador' ),
 				'error'          => __( 'No se pudo completar la búsqueda. Intenta de nuevo.', 'me-buscador' ),
+				'quitar'         => __( 'Quitar filtro: %s', 'me-buscador' ),
+				'quitarTodo'     => __( 'Quitar todo', 'me-buscador' ),
 				'mesAnterior'    => __( 'Mes anterior', 'me-buscador' ),
 				'mesSiguiente'   => __( 'Mes siguiente', 'me-buscador' ),
 			),
@@ -665,6 +667,7 @@ function meb_shortcode( $atts ) {
 						<span class="meb-filtros-n" data-filtros-n hidden></span>
 					</button>
 				</div>
+				<div class="meb-activos" data-activos hidden></div>
 				<div class="meb-grid" data-grid><?php echo $res['cards']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
 				<div class="meb-more-wrap">
 					<a class="meb-more" data-more href="<?php echo esc_url( add_query_arg( 'meb_pag', $args['pag'] + 1 ) ); ?>" <?php echo $res['hay_mas'] ? '' : 'hidden'; ?>><?php esc_html_e( 'Mostrar más', 'me-buscador' ); ?></a>

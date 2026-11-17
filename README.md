@@ -56,4 +56,4 @@ php dev/build-demo.php
 
 ## Estado
 
-Versión 0.1.0. Probado en el banco de pruebas; falta validarlo dentro de un WordPress real y con WPML.
+Versión 0.2.0. Probado en el banco de pruebas; falta validarlo dentro de un WordPress real y con WPML.

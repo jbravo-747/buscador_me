@@ -10,7 +10,8 @@
 		contenido: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/>',
 		persona: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
 		prev: '<path d="m15 5-7 7 7 7"/>',
-		next: '<path d="m9 5 7 7-7 7"/>'
+		next: '<path d="m9 5 7 7-7 7"/>',
+		x: '<path d="M6 6l12 12M18 6 6 18"/>'
 	};
 
 	function icono(nombre, size) {
@@ -92,7 +93,9 @@
 			base: null,
 			sug: [],
 			sugOn: -1,
-			pag: 1
+			pag: 1,
+			qAplicada: input.value.trim(),
+			activos: []
 		};
 
 		var hoy = new Date();
@@ -183,12 +186,18 @@
 		function elegir(item) {
 			if (!item) { return; }
 			if (item.url) { window.location.href = item.url; return; }
-			// Es un tema o eje: se marca en el tercer segmento y se avanza a la fecha.
+			// Es un tema o eje: se marca en el tercer segmento y se busca de inmediato.
 			var casilla = $('input[name="' + item.campo + '[]"][value="' + item.slug + '"]', form);
 			if (casilla) { casilla.checked = true; }
 			input.value = '';
 			sync();
-			abrir('fecha');
+			if (ajax) {
+				abrir(null);
+				input.blur();
+				buscar({ historial: true });
+			} else {
+				abrir('fecha');
+			}
 		}
 
 		sugList.addEventListener('click', function (e) {
@@ -221,6 +230,7 @@
 			sync();
 			input.focus();
 			cargarSugerencias();
+			if (st.qAplicada) { auto(); }
 		});
 
 		/* ---------- Fechas ---------- */
@@ -274,6 +284,7 @@
 			st.periodo = '';
 			sync();
 			pintarCalendario();
+			auto();
 		});
 
 		$$('[data-modo]', root).forEach(function (btn) {
@@ -300,6 +311,7 @@
 				st.periodo = btn.textContent.trim();
 				st.base = new Date(parse(st.desde).getFullYear(), parse(st.desde).getMonth(), 1);
 				sync();
+				auto();
 			});
 		});
 
@@ -351,6 +363,62 @@
 				(form.elements.meb_orden && form.elements.meb_orden.value ? 1 : 0);
 			var badge = $('[data-filtros-n]', root);
 			if (badge) { badge.textContent = n; badge.hidden = !n; }
+
+			pintarActivos(fecha);
+		}
+
+		/* ---------- Filtros activos (chips con ×) ---------- */
+
+		var activosBox = $('[data-activos]', root);
+
+		function pintarActivos(fecha) {
+			if (!activosBox) { return; }
+			var items = [];
+			if (st.qAplicada) { items.push({ tipo: 'q', texto: '«' + st.qAplicada + '»' }); }
+			if (fecha) { items.push({ tipo: 'fecha', texto: fecha }); }
+			$$('input[type="checkbox"]:checked', form).forEach(function (casilla) {
+				items.push({ tipo: 'casilla', el: casilla, texto: casilla.getAttribute('data-nombre') || casilla.parentNode.textContent.trim() });
+			});
+			var orden = $('input[name="meb_orden"]:checked', form);
+			if (orden && orden.value) { items.push({ tipo: 'orden', texto: orden.parentNode.textContent.trim() }); }
+
+			st.activos = items;
+			activosBox.hidden = !items.length;
+			activosBox.innerHTML = items.map(function (item, i) {
+				return '<button type="button" class="meb-activo" data-quitar="' + i + '" aria-label="' + esc((T.quitar || '%s').replace('%s', item.texto)) + '">' +
+					'<span>' + esc(item.texto) + '</span>' + icono('x', 12) + '</button>';
+			}).join('') + (items.length > 1 ? '<button type="button" class="meb-link" data-quitar="todo">' + esc(T.quitarTodo || '') + '</button>' : '');
+		}
+
+		function quitar(item) {
+			if (item.tipo === 'q') { input.value = ''; st.qAplicada = ''; }
+			if (item.tipo === 'fecha') { st.desde = ''; st.hasta = ''; st.periodo = ''; }
+			if (item.tipo === 'casilla') { item.el.checked = false; }
+			if (item.tipo === 'orden') { $$('input[name="meb_orden"]', form).forEach(function (r) { r.checked = r.value === ''; }); }
+		}
+
+		function limpiarTodo() {
+			st.activos.slice().forEach(quitar);
+			input.value = '';
+			st.qAplicada = '';
+			sync();
+			if (st.abierto === 'fecha') { pintarCalendario(); }
+		}
+
+		if (activosBox) {
+			activosBox.addEventListener('click', function (e) {
+				var btn = e.target.closest('[data-quitar]');
+				if (!btn) { return; }
+				var cual = btn.getAttribute('data-quitar');
+				if (cual === 'todo') {
+					limpiarTodo();
+				} else {
+					quitar(st.activos[+cual]);
+					sync();
+					if (st.abierto === 'fecha') { pintarCalendario(); }
+				}
+				buscar();
+			});
 		}
 
 		$('[data-accion="limpiar-fecha"]', root).addEventListener('click', function () {
@@ -359,12 +427,14 @@
 			st.periodo = '';
 			sync();
 			pintarCalendario();
+			auto();
 		});
 
-		form.addEventListener('change', function (e) {
+		// Cualquier cambio (pestaña, tema, filtros) actualiza los resultados sin pasar por «Buscar».
+		form.addEventListener('change', function () {
 			sync();
-			if (e.target.name === 'meb_tipo' && ajax) { buscar(); return; }
 			if (!modal.hidden) { contar(); }
+			auto();
 		});
 
 		/* ---------- Búsqueda ---------- */
@@ -386,9 +456,18 @@
 		}
 
 		var buscarCtl = null;
+		var autoTimer = null;
+
+		// Búsqueda en vivo: solo cuando los resultados están en la misma página.
+		function auto() {
+			if (!ajax) { return; }
+			clearTimeout(autoTimer);
+			autoTimer = setTimeout(function () { buscar(); }, 200);
+		}
 
 		function buscar(opciones) {
 			opciones = opciones || {};
+			clearTimeout(autoTimer);
 			var params = parametros();
 
 			if (!ajax) {
@@ -397,6 +476,8 @@
 			}
 
 			st.pag = opciones.sumar ? st.pag + 1 : 1;
+			st.qAplicada = params.meb_q ? params.meb_q.trim() : '';
+			sync();
 			var consulta = Object.assign({}, params, { meb_pag: st.pag, lang: CFG.lang || '' });
 
 			if (buscarCtl) { buscarCtl.abort(); }
@@ -409,7 +490,7 @@
 					grid.insertAdjacentHTML('beforeend', data.cards);
 				} else {
 					grid.innerHTML = data.cards;
-					history.pushState({ meb: true }, '', urlPublica(params));
+					history[opciones.historial ? 'pushState' : 'replaceState']({ meb: true }, '', urlPublica(params));
 				}
 				more.hidden = !data.hay_mas;
 				more.href = urlPublica(Object.assign({}, params, { meb_pag: st.pag + 1 }));
@@ -429,7 +510,7 @@
 			abrir(null);
 			if (!modal.hidden) { cerrarModal(); }
 			input.blur();
-			buscar();
+			buscar({ historial: true });
 		});
 
 		if (more) {
@@ -486,10 +567,10 @@
 					cerrarModal();
 					break;
 				case 'quitar-filtros':
-					$$('input[type="checkbox"]', modal).forEach(function (c) { c.checked = false; });
-					$$('input[name="meb_orden"]', modal).forEach(function (r) { r.checked = r.value === ''; });
-					sync();
+					// Quita todo: palabra, fechas, temas y los filtros del modal.
+					limpiarTodo();
 					contar();
+					auto();
 					break;
 			}
 		});

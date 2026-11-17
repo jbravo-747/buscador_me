@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&family=DM+Serif+Display&display=swap">
-<link rel="stylesheet" href="me-buscador.css?v=71949ced">
+<link rel="stylesheet" href="me-buscador.css?v=9efbddb3">
 <style>
 	:root { --primary-color: #f05025; --primary-font: 'DM Sans', sans-serif; --dark-blue-color: #101725; }
 	* { box-sizing: border-box; }
@@ -188,6 +188,7 @@
 						<svg class="meb-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>						Filtros						<span class="meb-filtros-n" data-filtros-n hidden></span>
 					</button>
 				</div>
+				<div class="meb-activos" data-activos hidden></div>
 				<div class="meb-grid" data-grid>	<a class="meb-card" href="https://mexicoevalua-dev.virk.io/eventos/auditoria-participativa-a-donde-va-nuestro-dinero/">
 		<span class="meb-card-img">
 							<img src="https://mexicoevalua-dev.virk.io/wp-content/uploads/2026/11/Banner_Auditoria-aprtiipativa-768x403.png" alt="" loading="lazy" decoding="async">
@@ -302,9 +303,9 @@
 	
 </main>
 <footer class="demo-pie">Prototipo del buscador. Las tarjetas enlazan al sitio de pruebas.</footer>
-<script>window.MEB = {"rest":"api/me-buscador/v1/","lang":"","meses":["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"],"mesesCortos":["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"],"dias":["D","L","M","M","J","V","S"],"i18n":{"cualquierFecha":"Cualquier fecha","cualquierTema":"Cualquier tema","cualquierCosa":"Buscar contenido","temas":"%d temas","desde":"Desde %s","mostrar":"Mostrar %s","sinSugerencias":"Sin sugerencias. Presiona Enter para buscar «%s».","error":"No se pudo completar la búsqueda. Intenta de nuevo.","mesAnterior":"Mes anterior","mesSiguiente":"Mes siguiente"}};</script>
-<script src="demo-api.js?v=71949ced"></script>
-<script src="me-buscador.js?v=71949ced"></script>
+<script>window.MEB = {"rest":"api/me-buscador/v1/","lang":"","meses":["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"],"mesesCortos":["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"],"dias":["D","L","M","M","J","V","S"],"i18n":{"cualquierFecha":"Cualquier fecha","cualquierTema":"Cualquier tema","cualquierCosa":"Buscar contenido","temas":"%d temas","desde":"Desde %s","mostrar":"Mostrar %s","sinSugerencias":"Sin sugerencias. Presiona Enter para buscar «%s».","error":"No se pudo completar la búsqueda. Intenta de nuevo.","quitar":"Quitar filtro: %s","quitarTodo":"Quitar todo","mesAnterior":"Mes anterior","mesSiguiente":"Mes siguiente"}};</script>
+<script src="demo-api.js?v=9efbddb3"></script>
+<script src="me-buscador.js?v=9efbddb3"></script>
 <script>document.addEventListener("DOMContentLoaded", function () { window.demoListo && window.demoListo(); });</script>
 </body>
 </html>
