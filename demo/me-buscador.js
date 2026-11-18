@@ -81,6 +81,8 @@
 		var modal = $('[data-modal]', root);
 		var results = $('.meb-results', root);
 		var grid = $('[data-grid]', root);
+		var listado = $('[data-listado]', root);
+		var destacado = $('[data-destacado]', root);
 		var more = $('[data-more]', root);
 		var compact = $('[data-compact]', root);
 		var ajax = root.getAttribute('data-ajax') === '1' && !!results;
@@ -490,6 +492,11 @@
 					grid.insertAdjacentHTML('beforeend', data.cards);
 				} else {
 					grid.innerHTML = data.cards;
+					if (destacado) {
+						destacado.innerHTML = data.destacado || '';
+						destacado.hidden = !data.destacado;
+						listado.classList.toggle('has-destacado', !!data.destacado);
+					}
 					history[opciones.historial ? 'pushState' : 'replaceState']({ meb: true }, '', urlPublica(params));
 				}
 				more.hidden = !data.hay_mas;

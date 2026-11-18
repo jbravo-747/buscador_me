@@ -72,6 +72,47 @@
 			'</a>';
 	}
 
+	var MESES_LARGOS = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+	// Mismo criterio y marcado que meb_destacado() en el plugin.
+	function destacado(params, pag) {
+		if (pag !== 1 || params.get('meb_tipo') !== 'eventos') { return ''; }
+		var hayFiltro = ['meb_q', 'meb_tema', 'meb_eje', 'meb_formato', 'meb_programa', 'meb_desde', 'meb_hasta'].some(function (k) {
+			return (params.get(k) || '').trim();
+		});
+		if (hayFiltro) { return ''; }
+
+		var d = new Date();
+		var hoy = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+		var proximo = null;
+		var reciente = null;
+		datos.contenidos.forEach(function (c) {
+			if (c.tipo !== 'eventos' || !c.evento || !c.evento.fecha) { return; }
+			var f = c.evento.fecha;
+			if (f >= hoy) {
+				if (!proximo || f < proximo.evento.fecha) { proximo = c; }
+			} else if (!reciente || f > reciente.evento.fecha) {
+				reciente = c;
+			}
+		});
+		var c = proximo || reciente;
+		if (!c) { return ''; }
+
+		var f = c.evento.fecha.split('-');
+		var tipo = nombre(datos.tax.evento, c);
+		var registro = proximo ? c.evento.registro : '';
+		return '<div class="meb-destacado">' +
+			'<a class="meb-destacado-info" href="' + esc(c.url) + '" target="_blank" rel="noopener">' +
+			'<span class="meb-destacado-kicker">' + (proximo ? 'Próximo evento destacado' : 'Evento destacado') + '</span>' +
+			'<span class="meb-destacado-fecha"><b>' + esc(f[2]) + '</b><i>' + MESES_LARGOS[f[1] - 1] + ' ' + esc(f[0]) + '</i></span>' +
+			(tipo ? '<span class="meb-destacado-tipo">' + esc(tipo) + '</span>' : '') +
+			'<span class="meb-destacado-titulo">' + esc(c.titulo) + '</span>' +
+			(c.evento.lugar ? '<span class="meb-destacado-lugar">' + esc(c.evento.lugar) + '</span>' : '') +
+			'</a>' +
+			'<a class="meb-destacado-btn" href="' + esc(registro || c.url) + '" target="_blank" rel="noopener">' + (registro ? 'Registrarse' : 'Ver detalles') + '</a>' +
+			'</div>';
+	}
+
 	function filtrar(params) {
 		var tipo = params.get('meb_tipo');
 		var tipos = datos.tipos.indexOf(tipo) > -1 ? [tipo] : datos.tipos;
@@ -115,6 +156,7 @@
 			total: total,
 			titulo: tituloTotal(total),
 			cards: cards,
+			destacado: destacado(params, pag),
 			hay_mas: pag * datos.porPagina < total,
 			pag: pag
 		};

@@ -126,7 +126,7 @@ function add_shortcode() {}
 function do_action() {}
 function apply_filters( $tag, $value ) {
 	if ( 'meb_card_image' === $tag ) { $post = func_get_arg( 2 ); return $post->img; }
-	if ( 'meb_card_evento' === $tag ) { $post = func_get_arg( 2 ); return $post->evento ? $post->evento : $value; }
+	if ( 'meb_card_evento' === $tag ) { $post = func_get_arg( 2 ); return $post->evento ? array_merge( $value, $post->evento ) : $value; }
 	return $value;
 }
 function post_type_exists( $t ) { global $TYPES; return isset( $TYPES[ $t ] ); }

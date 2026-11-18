@@ -2,7 +2,7 @@
 /**
  * Plugin Name: ME Buscador
  * Description: Buscador segmentado (palabra clave, fecha y tema) con autocompletado, filtros y resultados en vivo. Shortcode: [me_buscador].
- * Version: 0.3.0
+ * Version: 0.4.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Text Domain: me-buscador
@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MEB_VERSION', '0.3.0' );
+define( 'MEB_VERSION', '0.4.0' );
 
 /* -------------------------------------------------------------------------
  * Configuración
@@ -49,6 +49,7 @@ function meb_config() {
 				'fecha' => 'event_date',
 				'hora'  => 'event_time',
 				'lugar' => 'event_place',
+				'registro' => 'event_register_url',
 			),
 			'por_pagina'    => 12,
 		)
@@ -207,15 +208,16 @@ function meb_titulo_total( $total ) {
 }
 
 /**
- * Fecha, hora y lugar de un evento. Los nombres de los campos se ajustan con `meb_config`
+ * Fecha, hora, lugar y enlace de registro de un evento. Los nombres de los campos se ajustan con `meb_config`
  * (clave `meta_evento`) o se sustituye todo el arreglo con el filtro `meb_card_evento`.
  */
 function meb_evento( $post ) {
 	$config = meb_config();
 	$evento = array(
-		'fecha' => '',
-		'hora'  => '',
-		'lugar' => '',
+		'fecha'    => '',
+		'hora'     => '',
+		'lugar'    => '',
+		'registro' => '',
 	);
 	if ( in_array( $post->post_type, $config['tipos_evento'], true ) ) {
 		foreach ( $evento as $campo => $vacio ) {
@@ -294,6 +296,86 @@ function meb_card( $post ) {
 }
 
 /**
+ * Tarjeta destacada que acompaña al listado de eventos: el próximo evento o, si no hay
+ * ninguno por venir, el más reciente. Solo aparece en la pestaña de eventos y sin filtros.
+ */
+function meb_destacado( $args ) {
+	global $wp_locale;
+
+	$config = meb_config();
+	if ( 1 !== $args['pag'] || ! in_array( $args['tipo'], $config['tipos_evento'], true ) ) {
+		return '';
+	}
+	if ( $args['q'] || $args['tema'] || $args['eje'] || $args['formato'] || $args['programa'] || $args['desde'] || $args['hasta'] ) {
+		return '';
+	}
+
+	$query = new WP_Query(
+		array(
+			'post_type'           => $config['tipos_evento'],
+			'post_status'         => 'publish',
+			'posts_per_page'      => 30,
+			'paged'               => 1,
+			'ignore_sticky_posts' => true,
+			'no_found_rows'       => true,
+		)
+	);
+
+	$hoy      = current_time( 'Y-m-d' );
+	$proximo  = null;
+	$reciente = null;
+	foreach ( $query->posts as $post ) {
+		$evento = meb_evento( $post );
+		$ts     = $evento['fecha'] ? strtotime( $evento['fecha'] ) : false;
+		if ( ! $ts ) {
+			continue;
+		}
+		$item = array( gmdate( 'Y-m-d', $ts ), $post, $evento, $ts );
+		if ( $item[0] >= $hoy ) {
+			if ( ! $proximo || $item[0] < $proximo[0] ) {
+				$proximo = $item;
+			}
+		} elseif ( ! $reciente || $item[0] > $reciente[0] ) {
+			$reciente = $item;
+		}
+	}
+
+	$item = $proximo ? $proximo : $reciente;
+	if ( ! $item ) {
+		return '';
+	}
+	list( , $post, $evento, $ts ) = $item;
+
+	$tipo     = meb_primer_termino( $post, $config['tax_evento'] );
+	$mes      = $wp_locale->get_month( (int) gmdate( 'n', $ts ) ) . ' ' . gmdate( 'Y', $ts );
+	$enlace   = get_permalink( $post );
+	$registro = $proximo ? $evento['registro'] : '';
+
+	ob_start();
+	?>
+	<div class="meb-destacado">
+		<a class="meb-destacado-info" href="<?php echo esc_url( $enlace ); ?>">
+			<span class="meb-destacado-kicker"><?php echo esc_html( $proximo ? __( 'Próximo evento destacado', 'me-buscador' ) : __( 'Evento destacado', 'me-buscador' ) ); ?></span>
+			<span class="meb-destacado-fecha"><b><?php echo esc_html( gmdate( 'd', $ts ) ); ?></b><i><?php echo esc_html( $mes ); ?></i></span>
+			<?php if ( $tipo ) : ?>
+				<span class="meb-destacado-tipo"><?php echo esc_html( $tipo ); ?></span>
+			<?php endif; ?>
+			<span class="meb-destacado-titulo"><?php echo esc_html( get_the_title( $post ) ); ?></span>
+			<?php if ( $evento['lugar'] ) : ?>
+				<span class="meb-destacado-lugar"><?php echo esc_html( $evento['lugar'] ); ?></span>
+			<?php endif; ?>
+		</a>
+		<?php if ( $registro ) : ?>
+			<a class="meb-destacado-btn" href="<?php echo esc_url( $registro ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Registrarse', 'me-buscador' ); ?></a>
+		<?php else : ?>
+			<a class="meb-destacado-btn" href="<?php echo esc_url( $enlace ); ?>"><?php esc_html_e( 'Ver detalles', 'me-buscador' ); ?></a>
+		<?php endif; ?>
+	</div>
+	<?php
+	return ob_get_clean();
+}
+
+/**
  * Ejecuta la búsqueda y devuelve total, tarjetas y si hay más páginas.
  */
 function meb_resultados( $args ) {
@@ -313,6 +395,7 @@ function meb_resultados( $args ) {
 		'total'   => $total,
 		'titulo'  => meb_titulo_total( $total ),
 		'cards'   => $cards,
+		'destacado' => meb_destacado( $args ),
 		'hay_mas' => $args['pag'] < (int) $query->max_num_pages,
 		'pag'     => $args['pag'],
 	);
@@ -717,7 +800,10 @@ function meb_shortcode( $atts ) {
 					</button>
 				</div>
 				<div class="meb-activos" data-activos hidden></div>
-				<div class="meb-grid" data-grid><?php echo $res['cards']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
+				<div class="meb-listado<?php echo $res['destacado'] ? ' has-destacado' : ''; ?>" data-listado>
+					<div class="meb-destacado-wrap" data-destacado <?php echo $res['destacado'] ? '' : 'hidden'; ?>><?php echo $res['destacado']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
+					<div class="meb-grid" data-grid><?php echo $res['cards']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
+				</div>
 				<div class="meb-more-wrap">
 					<a class="meb-more" data-more href="<?php echo esc_url( add_query_arg( 'meb_pag', $args['pag'] + 1 ) ); ?>" <?php echo $res['hay_mas'] ? '' : 'hidden'; ?>><?php esc_html_e( 'Mostrar más', 'me-buscador' ); ?></a>
 				</div>

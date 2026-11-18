@@ -1050,6 +1050,167 @@
 	margin-left: 5px;
 }
 
+/* Evento destacado junto al listado (pestaña de eventos, sin filtros). */
+.meb .meb-listado.has-destacado {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+	gap: 24px;
+	align-items: start;
+}
+
+.meb .meb-listado.has-destacado .meb-grid {
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.meb .meb-destacado-wrap {
+	position: sticky;
+	top: calc(var(--meb-sticky-top) + 72px);
+}
+
+.meb .meb-destacado {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 32px;
+	min-height: 550px;
+	padding: 24px;
+	border-radius: 12px;
+	background: #1a1a2e;
+	color: #fff;
+	overflow: hidden;
+}
+
+.meb .meb-destacado::after {
+	content: '';
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	width: 300px;
+	height: 300px;
+	background: radial-gradient(141.42% 141.42% at 100% 100%, rgba(240, 80, 37, 0.3) 0%, rgba(240, 80, 37, 0) 70%);
+	pointer-events: none;
+}
+
+.meb .meb-destacado-info {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	color: inherit;
+	text-decoration: none;
+}
+
+.meb .meb-destacado-kicker {
+	margin-bottom: 16px;
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 1.3;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.4);
+}
+
+.meb .meb-destacado-fecha {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 4px 16px;
+	margin-bottom: 16px;
+}
+
+.meb .meb-destacado-fecha b {
+	font-family: var(--secondary-font, 'DM Serif Display', Georgia, serif);
+	font-size: 80px;
+	font-weight: 400;
+	line-height: 60px;
+}
+
+.meb .meb-destacado-fecha i {
+	font-family: var(--secondary-font, 'DM Serif Display', Georgia, serif);
+	font-size: 18px;
+	font-style: normal;
+	font-weight: 700;
+	text-transform: uppercase;
+	color: var(--meb-accent);
+}
+
+.meb .meb-destacado-tipo {
+	padding: 5px 10px;
+	border-radius: 999px;
+	background: #ecfdf5;
+	font-size: 12px;
+	font-weight: 700;
+	text-transform: uppercase;
+	color: var(--meb-accent);
+}
+
+.meb .meb-destacado-titulo {
+	margin-top: 16px;
+	font-size: 28px;
+	font-weight: 400;
+	line-height: 35px;
+}
+
+.meb .meb-destacado-info:hover .meb-destacado-titulo {
+	text-decoration: underline;
+}
+
+.meb .meb-destacado-lugar {
+	margin-top: 20px;
+	padding-left: 25px;
+	background: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 5C10 7.4965 7.2305 10.0965 6.3005 10.8995C6.21386 10.9646 6.1084 10.9999 6 10.9999C5.8916 10.9999 5.78614 10.9646 5.6995 10.8995C4.7695 10.0965 2 7.4965 2 5C2 3.93913 2.42143 2.92172 3.17157 2.17157C3.92172 1.42143 4.93913 1 6 1C7.06087 1 8.07828 1.42143 8.82843 2.17157C9.57857 2.92172 10 3.93913 10 5Z' stroke='%23ffffff' stroke-opacity='.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M6 6.5C6.82843 6.5 7.5 5.82843 7.5 5C7.5 4.17157 6.82843 3.5 6 3.5C5.17157 3.5 4.5 4.17157 4.5 5C4.5 5.82843 5.17157 6.5 6 6.5Z' stroke='%23ffffff' stroke-opacity='.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat left center / 20px;
+	font-size: 17px;
+	line-height: 25px;
+	color: rgba(255, 255, 255, 0.7);
+}
+
+.meb .meb-destacado-btn {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	padding: 10px 20px;
+	border-radius: 8px;
+	background: var(--meb-accent);
+	box-shadow: 0 4px 16px rgba(240, 80, 37, 0.4);
+	font-size: 17px;
+	font-weight: 500;
+	line-height: 25px;
+	color: #fff;
+	text-decoration: none;
+	transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.meb .meb-destacado-btn::after {
+	content: '';
+	width: 16px;
+	height: 16px;
+	background: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.33337 8H12.6667' stroke='white' stroke-width='1.33333' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M8 3.33334L12.6667 8.00001L8 12.6667' stroke='white' stroke-width='1.33333' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.meb .meb-destacado-btn:hover {
+	background: #c03a18;
+	box-shadow: 0 6px 20px rgba(240, 80, 37, 0.35);
+}
+
+@media (max-width: 899px) {
+	.meb .meb-listado.has-destacado {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.meb .meb-destacado-wrap {
+		position: static;
+	}
+
+	.meb .meb-destacado {
+		min-height: 0;
+		padding: 32px 24px;
+	}
+}
+
 .meb .meb-empty {
 	grid-column: 1 / -1;
 	margin: 0;

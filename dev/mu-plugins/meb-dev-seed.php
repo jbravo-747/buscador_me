@@ -106,6 +106,9 @@ add_action(
 				update_post_meta( $id, 'event_date', $p['evento']['fecha'] );
 				update_post_meta( $id, 'event_time', $p['evento']['hora'] );
 				update_post_meta( $id, 'event_place', $p['evento']['lugar'] );
+				if ( ! empty( $p['evento']['registro'] ) ) {
+					update_post_meta( $id, 'event_register_url', $p['evento']['registro'] );
+				}
 			}
 			foreach ( $p['tax'] as $tax => $ids ) {
 				$nuevos = array();
