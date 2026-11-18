@@ -102,6 +102,11 @@ add_action(
 			if ( $p['img'] ) {
 				update_post_meta( $id, '_meb_img', $p['img'] );
 			}
+			if ( ! empty( $p['evento'] ) ) {
+				update_post_meta( $id, 'event_date', $p['evento']['fecha'] );
+				update_post_meta( $id, 'event_time', $p['evento']['hora'] );
+				update_post_meta( $id, 'event_place', $p['evento']['lugar'] );
+			}
 			foreach ( $p['tax'] as $tax => $ids ) {
 				$nuevos = array();
 				foreach ( $ids as $viejo ) {

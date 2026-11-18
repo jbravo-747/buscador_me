@@ -894,22 +894,32 @@
 .meb .meb-grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-	gap: 32px 24px;
+	gap: 24px;
 }
 
+/* Tarjeta: mismo diseño que las tarjetas de evento del tema (.event_card). */
 .meb .meb-card {
 	display: flex;
 	flex-direction: column;
+	border: 1px solid var(--border-color, #e4e4e4);
+	border-radius: 16px;
+	background: var(--meb-surface);
 	color: var(--meb-ink);
 	text-decoration: none;
+	overflow: hidden;
+	transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.meb .meb-card:hover {
+	transform: translateY(-8px);
+	box-shadow: 0 8px 18px rgba(0, 0, 7, 0.1);
 }
 
 .meb .meb-card-img {
 	position: relative;
 	display: block;
-	aspect-ratio: 20 / 13;
-	margin-bottom: 12px;
-	border-radius: 16px;
+	flex: 0 0 auto;
+	height: 160px;
 	background: var(--meb-fill);
 	overflow: hidden;
 }
@@ -923,54 +933,121 @@
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
-	transition: transform 0.3s ease;
 }
 
-.meb .meb-card:hover .meb-card-img img {
-	transform: scale(1.04);
+.meb .meb-card-date {
+	position: absolute;
+	top: 8px;
+	left: 8px;
+	display: flex;
+	flex-direction: column;
+	padding: 5px 8px;
+	border-radius: 8px;
+	background: #fff;
+}
+
+.meb .meb-card-date b {
+	font-family: var(--secondary-font, 'DM Serif Display', Georgia, serif);
+	font-size: 24px;
+	font-weight: 400;
+	line-height: 24px;
+	color: #1a1a1a;
+}
+
+.meb .meb-card-date i {
+	margin-top: 5px;
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 700;
+	line-height: 21px;
+	text-transform: uppercase;
+	color: var(--meb-accent);
 }
 
 .meb .meb-badge {
 	position: absolute;
-	top: 12px;
-	left: 12px;
-	padding: 5px 11px;
-	border-radius: 999px;
-	background: rgba(255, 255, 255, 0.94);
-	box-shadow: 0 1px 3px rgba(16, 24, 40, 0.18);
-	font-size: 12px;
-	font-weight: 600;
-	color: var(--meb-ink);
+	top: 15px;
+	right: 8px;
+	max-width: calc(100% - 76px);
+	padding: 8px;
+	border-radius: 8px;
+	background: #fff;
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 21px;
+	text-transform: uppercase;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	color: #4b5563;
+}
+
+.meb .meb-card-body {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 10px;
+	padding: 10px 15px;
+	font-size: 16px;
+	line-height: 24px;
+}
+
+.meb .meb-card-place,
+.meb .meb-card-tema {
+	color: var(--text-color, #737373);
+}
+
+.meb .meb-card-place {
+	padding-left: 25px;
+	background: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 5C10 7.4965 7.2305 10.0965 6.3005 10.8995C6.21386 10.9646 6.1084 10.9999 6 10.9999C5.8916 10.9999 5.78614 10.9646 5.6995 10.8995C4.7695 10.0965 2 7.4965 2 5C2 3.93913 2.42143 2.92172 3.17157 2.17157C3.92172 1.42143 4.93913 1 6 1C7.06087 1 8.07828 1.42143 8.82843 2.17157C9.57857 2.92172 10 3.93913 10 5Z' stroke='%23ABABAB' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M6 6.5C6.82843 6.5 7.5 5.82843 7.5 5C7.5 4.17157 6.82843 3.5 6 3.5C5.17157 3.5 4.5 4.17157 4.5 5C4.5 5.82843 5.17157 6.5 6 6.5Z' stroke='%23ABABAB' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat left center / 20px;
 }
 
 .meb .meb-card-title {
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 2;
+	height: 56px;
 	overflow: hidden;
-	font-size: 16px;
-	font-weight: 600;
-	line-height: 1.3;
-}
-
-.meb .meb-card:hover .meb-card-title {
-	text-decoration: underline;
+	font-family: var(--secondary-font, 'DM Serif Display', Georgia, serif);
+	font-size: 20px;
+	font-weight: 400;
+	line-height: 28px;
+	color: #1a1a1a;
 }
 
 .meb .meb-card-meta {
-	margin-top: 4px;
-	font-size: 13px;
-	color: var(--meb-muted);
+	font-family: var(--inter-font, 'Inter', sans-serif);
+	font-size: 14px;
+	color: #6b7280;
 }
 
-.meb .meb-card-text {
-	display: -webkit-box;
-	-webkit-box-orient: vertical;
-	-webkit-line-clamp: 2;
-	overflow: hidden;
-	margin-top: 6px;
-	font-size: 14px;
-	color: var(--meb-muted);
+.meb .meb-card-foot {
+	display: flex;
+	margin-top: auto;
+	padding: 0 15px 10px;
+}
+
+.meb .meb-card-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 17px;
+	font-weight: 600;
+	line-height: 25.5px;
+	color: var(--meb-accent);
+}
+
+.meb .meb-card-link::after {
+	content: '';
+	flex: 0 0 14px;
+	width: 14px;
+	height: 14px;
+	background: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2.91667 7H11.0833' stroke='%23F05025' stroke-width='1.16667' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7 2.91663L11.0833 6.99996L7 11.0833' stroke='%23F05025' stroke-width='1.16667' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+	transition: margin-left 0.2s ease;
+}
+
+.meb .meb-card:hover .meb-card-link::after {
+	margin-left: 5px;
 }
 
 .meb .meb-empty {

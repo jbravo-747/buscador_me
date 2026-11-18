@@ -2,7 +2,7 @@
 /**
  * Plugin Name: ME Buscador
  * Description: Buscador segmentado (palabra clave, fecha y tema) con autocompletado, filtros y resultados en vivo. Shortcode: [me_buscador].
- * Version: 0.2.0
+ * Version: 0.3.0
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * Text Domain: me-buscador
@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MEB_VERSION', '0.2.0' );
+define( 'MEB_VERSION', '0.3.0' );
 
 /* -------------------------------------------------------------------------
  * Configuración
@@ -42,6 +42,14 @@ function meb_config() {
 			'tax_eje'       => taxonomy_exists( 'ejes_tematicos' ) ? 'ejes_tematicos' : '',
 			'tax_formato'   => taxonomy_exists( 'publication_type' ) ? 'publication_type' : '',
 			'tax_programa'  => taxonomy_exists( 'programa' ) ? 'programa' : '',
+			'tax_evento'    => taxonomy_exists( 'event_type' ) ? 'event_type' : '',
+			'tipos_evento'  => array( 'eventos' ),
+			// Campos personalizados del evento (fecha, hora y lugar de la tarjeta).
+			'meta_evento'   => array(
+				'fecha' => 'event_date',
+				'hora'  => 'event_time',
+				'lugar' => 'event_place',
+			),
 			'por_pagina'    => 12,
 		)
 	);
@@ -198,30 +206,63 @@ function meb_titulo_total( $total ) {
 	return sprintf( _n( '%s resultado', '%s resultados', $total, 'me-buscador' ), number_format_i18n( $total ) );
 }
 
+/**
+ * Fecha, hora y lugar de un evento. Los nombres de los campos se ajustan con `meb_config`
+ * (clave `meta_evento`) o se sustituye todo el arreglo con el filtro `meb_card_evento`.
+ */
+function meb_evento( $post ) {
+	$config = meb_config();
+	$evento = array(
+		'fecha' => '',
+		'hora'  => '',
+		'lugar' => '',
+	);
+	if ( in_array( $post->post_type, $config['tipos_evento'], true ) ) {
+		foreach ( $evento as $campo => $vacio ) {
+			$clave = isset( $config['meta_evento'][ $campo ] ) ? $config['meta_evento'][ $campo ] : '';
+			if ( $clave ) {
+				$evento[ $campo ] = trim( (string) get_post_meta( $post->ID, $clave, true ) );
+			}
+		}
+	}
+	return apply_filters( 'meb_card_evento', $evento, $post );
+}
+
+function meb_primer_termino( $post, $taxonomy ) {
+	if ( ! $taxonomy || ! is_object_in_taxonomy( $post->post_type, $taxonomy ) ) {
+		return '';
+	}
+	$terms = get_the_terms( $post, $taxonomy );
+	return ( $terms && ! is_wp_error( $terms ) ) ? $terms[0]->name : '';
+}
+
 function meb_card( $post ) {
+	global $wp_locale;
+
 	$config = meb_config();
 	$type   = get_post_type_object( $post->post_type );
-	$badge  = $type ? $type->labels->singular_name : '';
+	$evento = meb_evento( $post );
 
-	if ( $config['tax_formato'] && is_object_in_taxonomy( $post->post_type, $config['tax_formato'] ) ) {
-		$formatos = get_the_terms( $post, $config['tax_formato'] );
-		if ( $formatos && ! is_wp_error( $formatos ) ) {
-			$badge = $formatos[0]->name;
-		}
+	$badge = meb_primer_termino( $post, $config['tax_formato'] );
+	if ( ! $badge ) {
+		$badge = meb_primer_termino( $post, $config['tax_evento'] );
+	}
+	if ( ! $badge && $type ) {
+		$badge = $type->labels->singular_name;
 	}
 
-	$tema = '';
-	if ( is_object_in_taxonomy( $post->post_type, $config['tax_tema'] ) ) {
-		$temas = get_the_terms( $post, $config['tax_tema'] );
-		if ( $temas && ! is_wp_error( $temas ) ) {
-			$tema = $temas[0]->name;
-		}
+	// La insignia de fecha usa la fecha del evento si existe; si no, la de publicación.
+	$ts = $evento['fecha'] ? strtotime( $evento['fecha'] ) : false;
+	if ( ! $ts ) {
+		$ts = strtotime( $post->post_date );
 	}
+	$dia = gmdate( 'd', $ts );
+	$mes = $wp_locale->get_month_abbrev( $wp_locale->get_month( (int) gmdate( 'n', $ts ) ) );
 
-	$img     = apply_filters( 'meb_card_image', get_the_post_thumbnail_url( $post, 'medium_large' ), $post );
-	$texto   = $post->post_excerpt ? $post->post_excerpt : strip_shortcodes( $post->post_content );
-	$extract = wp_trim_words( wp_strip_all_tags( $texto ), 24, '…' );
-	$meta    = array_filter( array( get_the_date( '', $post ), $tema ) );
+	$es_evento = in_array( $post->post_type, $config['tipos_evento'], true );
+	$tema      = $es_evento ? '' : meb_primer_termino( $post, $config['tax_tema'] );
+	$meta      = $es_evento ? $evento['hora'] : get_the_date( '', $post );
+	$img       = apply_filters( 'meb_card_image', get_the_post_thumbnail_url( $post, 'medium_large' ), $post );
 
 	ob_start();
 	?>
@@ -230,15 +271,23 @@ function meb_card( $post ) {
 			<?php if ( $img ) : ?>
 				<img src="<?php echo esc_url( $img ); ?>" alt="" loading="lazy" decoding="async">
 			<?php endif; ?>
+			<span class="meb-card-date"><b><?php echo esc_html( $dia ); ?></b><i><?php echo esc_html( $mes ); ?></i></span>
 			<?php if ( $badge ) : ?>
 				<span class="meb-badge"><?php echo esc_html( $badge ); ?></span>
 			<?php endif; ?>
 		</span>
-		<span class="meb-card-title"><?php echo esc_html( get_the_title( $post ) ); ?></span>
-		<span class="meb-card-meta"><?php echo esc_html( implode( ' · ', $meta ) ); ?></span>
-		<?php if ( $extract ) : ?>
-			<span class="meb-card-text"><?php echo esc_html( $extract ); ?></span>
-		<?php endif; ?>
+		<span class="meb-card-body">
+			<?php if ( $evento['lugar'] ) : ?>
+				<span class="meb-card-place"><?php echo esc_html( $evento['lugar'] ); ?></span>
+			<?php elseif ( $tema ) : ?>
+				<span class="meb-card-tema"><?php echo esc_html( $tema ); ?></span>
+			<?php endif; ?>
+			<span class="meb-card-title"><?php echo esc_html( get_the_title( $post ) ); ?></span>
+			<?php if ( $meta ) : ?>
+				<span class="meb-card-meta"><?php echo esc_html( $meta ); ?></span>
+			<?php endif; ?>
+		</span>
+		<span class="meb-card-foot"><span class="meb-card-link"><?php esc_html_e( 'Ver detalles', 'me-buscador' ); ?></span></span>
 	</a>
 	<?php
 	return ob_get_clean();

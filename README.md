@@ -34,7 +34,11 @@ Ejemplo de barra sola que envía a la página del buscador:
 
 El plugin detecta los tipos `publicaciones`, `prensa`, `multimedia` y `eventos`, y las taxonomías `tema_investigacion`, `ejes_tematicos`, `publication_type` y `programa`. Si no existen, usa entradas y categorías. Todo se puede cambiar con el filtro `meb_config`.
 
-Otros filtros: `meb_query_args` (consulta) y `meb_card_image` (imagen de la tarjeta).
+Otros filtros: `meb_query_args` (consulta), `meb_card_image` (imagen de la tarjeta) y `meb_card_evento` (fecha, hora y lugar de un evento).
+
+### Tarjetas de evento
+
+Las tarjetas siguen el diseño de `.event_card` del tema. En los eventos muestran la fecha, la hora y el lugar del evento, que el plugin lee de campos personalizados. Los nombres por defecto (`event_date`, `event_time`, `event_place`) son provisionales: hay que confirmarlos en el sitio y ajustarlos en la clave `meta_evento` de `meb_config`. Si un campo no existe, la tarjeta usa la fecha de publicación y omite hora y lugar.
 
 ## Banco de pruebas
 
@@ -56,4 +60,4 @@ php dev/build-demo.php
 
 ## Estado
 
-Versión 0.2.0. Probado en el banco de pruebas; falta validarlo dentro de un WordPress real y con WPML.
+Versión 0.3.0. Probado en el banco de pruebas; falta validarlo dentro de un WordPress real y con WPML.

@@ -35,6 +35,7 @@ $datos  = array(
 		'eje'      => $config['tax_eje'],
 		'formato'  => $config['tax_formato'],
 		'programa' => $config['tax_programa'],
+		'evento'   => $config['tax_evento'],
 	),
 	'etiquetas'  => array(),
 	'terminos'   => array(),
@@ -55,6 +56,7 @@ foreach ( $POSTS as $p ) {
 		'fechaTx' => get_the_date( '', $p ),
 		'texto'   => wp_trim_words( $p->post_excerpt, 24, '…' ),
 		'img'     => $p->img,
+		'evento'  => $p->evento,
 		'url'     => get_permalink( $p ),
 		'tax'     => (object) $p->tax,
 	);
@@ -79,7 +81,7 @@ $pagina = <<<HTML
 <title>Demo del buscador</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&family=DM+Serif+Display&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&family=DM+Serif+Display&family=Inter:wght@400;600&display=swap">
 <link rel="stylesheet" href="me-buscador.css?v=$version">
 <style>
 	:root { --primary-color: #f05025; --primary-font: 'DM Sans', sans-serif; --dark-blue-color: #101725; }

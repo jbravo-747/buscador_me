@@ -40,20 +40,35 @@
 		return n.toLocaleString('es-MX') + (n === 1 ? ' resultado' : ' resultados');
 	}
 
+	var MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+
+	function nombre(tax, c) {
+		var slug = (c.tax[tax] || [])[0];
+		var t = slug && termino(tax, slug);
+		return t ? t.nombre : '';
+	}
+
+	// Mismo marcado que meb_card() en el plugin.
 	function tarjeta(c) {
-		var formato = (c.tax[datos.tax.formato] || [])[0];
-		var tema = (c.tax[datos.tax.tema] || [])[0];
-		var insignia = formato ? termino(datos.tax.formato, formato).nombre : datos.etiquetas[c.tipo];
-		var meta = [c.fechaTx];
-		if (tema) { meta.push(termino(datos.tax.tema, tema).nombre); }
+		var ev = c.evento || {};
+		var insignia = nombre(datos.tax.formato, c) || nombre(datos.tax.evento, c) || datos.etiquetas[c.tipo];
+		var fecha = (ev.fecha || c.fecha).split('-');
+		var esEvento = c.tipo === 'eventos';
+		var tema = esEvento ? '' : nombre(datos.tax.tema, c);
+		var meta = esEvento ? ev.hora : c.fechaTx;
 
 		return '<a class="meb-card" href="' + esc(c.url) + '" target="_blank" rel="noopener">' +
 			'<span class="meb-card-img' + (c.img ? '' : ' is-empty') + '">' +
 			(c.img ? '<img src="' + esc(c.img) + '" alt="" loading="lazy" decoding="async">' : '') +
+			'<span class="meb-card-date"><b>' + esc(fecha[2]) + '</b><i>' + MESES[fecha[1] - 1] + '</i></span>' +
 			'<span class="meb-badge">' + esc(insignia) + '</span></span>' +
+			'<span class="meb-card-body">' +
+			(ev.lugar ? '<span class="meb-card-place">' + esc(ev.lugar) + '</span>' :
+				(tema ? '<span class="meb-card-tema">' + esc(tema) + '</span>' : '')) +
 			'<span class="meb-card-title">' + esc(c.titulo) + '</span>' +
-			'<span class="meb-card-meta">' + esc(meta.join(' · ')) + '</span>' +
-			(c.texto ? '<span class="meb-card-text">' + esc(c.texto) + '</span>' : '') +
+			(meta ? '<span class="meb-card-meta">' + esc(meta) + '</span>' : '') +
+			'</span>' +
+			'<span class="meb-card-foot"><span class="meb-card-link">Ver detalles</span></span>' +
 			'</a>';
 	}
 

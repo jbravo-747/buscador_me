@@ -54,13 +54,14 @@ foreach ( $SEED['posts'] as $i => $p ) {
 		'img'          => $p['img'],
 		'tax'          => $tax,
 		'slug'         => $p['slug'],
+		'evento'       => isset( $p['evento'] ) ? $p['evento'] : null,
 	);
 }
 $TYPES = array(
 	'publicaciones' => array( 'Nuestras investigaciones', 'Investigación', array( 'ejes_tematicos', 'tema_investigacion', 'publication_type', 'programa' ) ),
 	'prensa'        => array( 'Prensa', 'Prensa', array( 'ejes_tematicos', 'tema_investigacion', 'programa' ) ),
 	'multimedia'    => array( 'Multimedia', 'Multimedia', array( 'ejes_tematicos', 'tema_investigacion', 'programa' ) ),
-	'eventos'       => array( 'Eventos', 'Evento', array( 'ejes_tematicos', 'programa' ) ),
+	'eventos'       => array( 'Eventos', 'Evento', array( 'ejes_tematicos', 'programa', 'event_type' ) ),
 	'equipo'        => array( 'Equipo', 'Equipo', array() ),
 );
 
@@ -125,6 +126,7 @@ function add_shortcode() {}
 function do_action() {}
 function apply_filters( $tag, $value ) {
 	if ( 'meb_card_image' === $tag ) { $post = func_get_arg( 2 ); return $post->img; }
+	if ( 'meb_card_evento' === $tag ) { $post = func_get_arg( 2 ); return $post->evento ? $post->evento : $value; }
 	return $value;
 }
 function post_type_exists( $t ) { global $TYPES; return isset( $TYPES[ $t ] ); }
@@ -181,6 +183,7 @@ function get_the_date( $f, $post ) {
 	return (int) date( 'j', $t ) . ' de ' . $wp_locale->get_month( (int) date( 'n', $t ) ) . ' de ' . date( 'Y', $t );
 }
 function get_the_post_thumbnail_url() { return ''; }
+function get_post_meta() { return ''; }
 function strip_shortcodes( $v ) { return $v; }
 function wp_strip_all_tags( $v ) { return trim( strip_tags( $v ) ); }
 function wp_trim_words( $text, $n, $more ) {
@@ -220,7 +223,7 @@ $oscuro = isset( $atts['tema'] ) && 'oscuro' === $atts['tema'];
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ME Buscador — banco de pruebas</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&family=DM+Serif+Display&family=Inter:wght@400;600&display=swap">
 <link rel="stylesheet" href="/assets/me-buscador.css">
 <style>
 	:root { --primary-color: #f05025; --primary-font: 'DM Sans', sans-serif; --dark-blue-color: #101725; }
